@@ -1,0 +1,58 @@
+!/bin/bash
+YOUR_SAMPLE_NAME="YOUR_SAMPLE_NAME"
+## conda install qiime2
+#wget https://data.qiime2.org/distro/core/qiime2-2019.7-py36-linux-conda.yml
+#conda env create -n qiime2-2019.7 --file qiime2-2019.7-py36-linux-conda.yml
+## OPTIONAL CLEANUP
+#rm qiime2-2019.7-py36-linux-conda.yml
+
+## activate qiime2
+source activate qiime2-2019.7
+
+qiime quality-filter q-score \
+ --i-demux  $YOUR_SAMPLE_NAME.qza \
+ --o-filtered-sequences $YOUR_SAMPLE_NAME.filtered.qza \
+ --o-filter-stats $YOUR_SAMPLE_NAME.filter-stats.qza
+
+qiime vsearch dereplicate-sequences \
+  --i-sequences $YOUR_SAMPLE_NAME.filtered.qza \
+  --o-dereplicated-table $YOUR_SAMPLE_NAME.filtered.table.qza \
+  --o-dereplicated-sequences $YOUR_SAMPLE_NAME.filtered.rep-seqs.qza
+
+qiime vsearch cluster-features-de-novo \
+  --i-table $YOUR_SAMPLE_NAME.filtered.table.qza \
+  --i-sequences $YOUR_SAMPLE_NAME.filtered.rep-seqs.qza \
+  --p-perc-identity 0.99 \
+  --o-clustered-table $YOUR_SAMPLE_NAME.filtered.table-dn-99.qza \
+  --o-clustered-sequences $YOUR_SAMPLE_NAME.filtered.rep-seqs-dn-99.qza
+
+## export OTU table into folder $YOUR_SAMPLE_NAME.table.OTU.table
+qiime tools export \
+  --input-path $YOUR_SAMPLE_NAME.filtered.table-dn-99.qza \
+  --output-path $YOUR_SAMPLE_NAME.table.OTU.table
+
+export HDF5_USE_FILE_LOCKING='FALSE'
+biom convert -i $YOUR_SAMPLE_NAME.table.OTU.table/feature-table.biom -o $YOUR_SAMPLE_NAME.table.OTU/feature-table.tsv --to-tsv
+
+## export representative OTU seqs into folder $YOUR_SAMPLE_NAME.filtered.rep-seqs-dn-99.fasta
+qiime tools export \
+  --input-path $YOUR_SAMPLE_NAME.filtered.rep-seqs-dn-99.qza \
+  --output-path $YOUR_SAMPLE_NAME.filtered.rep-seqs-dn-99.fasta
+
+## taxonomy classification by classify-sklearn
+## using greengenes
+qiime feature-classifier classify-sklearn \
+  --i-classifier ../16S.515F.806R.classifier.qza \
+  --i-reads $YOUR_SAMPLE_NAME.filtered.rep-seqs-dn-99.qza \
+  --o-classification $YOUR_SAMPLE_NAME.taxonomy.qza
+
+## or using silva
+qiime feature-classifier classify-sklearn \
+  --i-classifier ../silva-132-99-515-806-nb-classifier.qza \
+  --i-reads $YOUR_SAMPLE_NAME.filtered.rep-seqs-dn-99.qza \
+  --o-classification $YOUR_SAMPLE_NAME.taxonomy.qza
+
+## export classify-sklearn taxonomy into folder $YOUR_SAMPLE_NAME.taxonomy.table
+qiime tools export \
+  --input-path $YOUR_SAMPLE_NAME.taxonomy.qza \
+  --output-path $YOUR_SAMPLE_NAME.taxonomy.table
