@@ -36,7 +36,7 @@ To align reads, usually metagenomes, to a known reference genome
 **Homework 3.2** in folder example/EsCoTrack: use mapper to track E.coli strains in a metagenome
 **Homework 3.3** in folder example/CovidVariant: use mapper to identify SARS-COV-2 mutations in a metagenome\
 **Note**: for windows PC, you might need to replace '/' in directory path to '\\'!\
-![Mapper output](https://raw.githubusercontent.com/caozhichongchong/bioinformatics_lecture/figures/Mapper_output.png)
+![Mapper output](figures/Mapper_output.png)
 * assembly: assemble short reads into long reads 
     * for WGS (whole genome sequencing): SPAdes
     * for metagenomes: metaSPAdes, IDBA-UD, MEGAHIT
@@ -129,15 +129,47 @@ To align reads, usually metagenomes, to a known reference genome
     the expected number of incorrect rejections (also known as false positives) is 5.\
     -> FDR adjusting [in python](https://www.statsmodels.org/devel/stats.html#multiple-tests-and-multiple-comparison-procedures)
     * Examples
-        * 
-    
-    
-    
-    
+        * Hypothesis: B.longum acquires spacers faster than other species\
+        Null hypothesis: All species have similar rate of acquiring CRISPR spacers -> \
+        No. newly acquired spacers ()over one year) in different species have no significant difference.\
+        two-way anova test [in python](https://www.statsmodels.org/dev/generated/statsmodels.stats.anova.anova_lm.html)\
+        ![CRISPR spacers acquisition in diff species](figures/Crispr.png)
+        * Hypothesis: target genes (PE, parallel evolution) are likely targets of adaptive evolution in gut commensal species. 
+        ![Parallel evolution](figures/Parallel_evolution.png)
+        Figure a: dN/dS of target genes is significantly higher than expected (a one-sided [binomial test](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.binom_test.html) compared to an expectation of 1)\
+        Figure b: Observed PE SNPs are significantly higher than expected PE SNPs (CI 95%) based on 100 replicate simulations.\
+        Figure c: Truncations were significantly enriched on PE genes versus non-PE genes ([fisher exact test](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.fisher_exact.html)). \
+        Figure d: Truncation loci on PE genes were found significantly smaller (closer to the start codon than non-PE genes (a one-sided [ks-test](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kstest.html)).         
 * Visualization
+    * I love seaborn and matplotlib (only the one in python, not in MATLAB)\
+    `pip install seaborn` # for plotting\
+    `pip install matplotlib` # for plotting\
+    `pip install pandas` # for processing data (data frame)\
+    `pip install numpy` # for math on array\
+    `pip install scipy` # for statistics
+    * Useful links of plotting examples\
+    [Regression data](https://seaborn.pydata.org/tutorial/regression.html)\
+    [Statistical relationships](https://seaborn.pydata.org/tutorial/relational.html)\
+    [Distribution of data](https://seaborn.pydata.org/tutorial/distributions.html)\
+    [Categorical data](https://seaborn.pydata.org/tutorial/categorical.html)
+    * A quick work through [Example can be downloaded here](https://drive.google.com/drive/folders/1kKDsmsKNie8CC5E5nbRnrGmh30A7a5hf?usp=sharing)
+
 * [Model](https://xkcd.com/2169/)
     * predictive model and cross validation
+        * To predict the number of genes under positive selection by:\
+        Genetic information (No. SNPs, total No. genes, average gene length)\
+        Taxonomy information (species, gram positive/negative)\
+        Ecology information (abundance and prevalence of a species)\
+        Host information (diet, age, BMI, ...)\
+        -> training a random forest model based on a subset of data (for example, shuffle each species out of the subset)\
+        -> using the model to predict another subset of data\
+        -> computing the accuracy\
+        -> evaluating the importance of different parameters (out of the bag in turns, computing accuracy decrease)
     * descriptive model
+        * Based on knowledge and logic
+        * How does crispr spacer array evolve?
+        ![Figure1a](figures/Figure1a.png)
+        ![Figure1b](figures/Figure1b.png)
 
 ## Contact
 anniz44@mit.edu or caozhichongchong@gmail.com
