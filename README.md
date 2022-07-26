@@ -3,6 +3,8 @@ The application of tools of computation and analysis to the capture and interpre
 1) To know what tools to use and how to use the tools
 2) How to interpret data and test our hypotheses: statistic tests, null model, and visualization
 
+#### [Example can be downloaded here](https://drive.google.com/drive/folders/1kKDsmsKNie8CC5E5nbRnrGmh30A7a5hf?usp=sharing)
+
 ## Tools
 * [anaconda or miniconda](https://docs.conda.io/en/latest/miniconda.html): get python 3.9 version\
 Many tools + their required environments can be easily installed by conda!\
@@ -22,7 +24,7 @@ Homework 2: install pip and use pip to install pandas (`pip install pandas`)
         * `usearch -makeudb_usearch your_database -output your_database.udb`
     * [hmm](https://anaconda.org/bioconda/hmmer): domain based
         * `hmmsearch --tblout your_result.txt --cpu 10 -E 0.01 your_database.hmm your_sample.faa`
-Homework 3: find HGT regions among 2 genomes by similarity >= 100% over 1kbp genomic region
+Homework 3.1 in folder example/HGT: find HGT regions among 2 genomes by similarity >= 100% over 1kbp genomic region
 * sequence mapping/alignment: bioinformaticians just enjoy making up words\
 To align reads, usually metagenomes, to a known reference genome
     * abundance of a known species in a sample
@@ -31,7 +33,10 @@ To align reads, usually metagenomes, to a known reference genome
     * [Mapper](https://github.com/mathjeff/Mapper): fast, accurate, short read only, easy to use.
     * [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml): slow, short read only, designed for human genomes, requires other tools such as samtools and bcftools for downstream analysis.
     * [minimap2](https://github.com/lh3/minimap2): slightly faster than bowtie2, long read too, designed for human genomes, requires other tools such as samtools and bcftools for downstream analysis.\
-**Homework 4**: use mapper to compute the abundance of E.coli in a metagenome
+**Homework 3.2** in folder example/EsCoTrack: use mapper to track E.coli strains in a metagenome
+**Homework 3.3** in folder example/CovidVariant: use mapper to identify SARS-COV-2 mutations in a metagenome\
+**Note**: for windows PC, you might need to replace '/' in directory path to '\\'!\
+![Mapper output](https://raw.githubusercontent.com/caozhichongchong/bioinformatics_lecture/figures/Mapper_output.png)
 * assembly: assemble short reads into long reads 
     * for WGS (whole genome sequencing): SPAdes
     * for metagenomes: metaSPAdes, IDBA-UD, MEGAHIT
@@ -60,7 +65,7 @@ To align reads, usually metagenomes, to a known reference genome
     * MGE identification
         * [SRID](https://github.com/XiaofangJ/SRID)
         * [MGEfinder](https://github.com/bhattlab/MGEfinder)
-    * homework 5: annotate ARGs in a metagenome sample
+    * Homework 3.4: annotate ARGs in a metagenome sample (example/EsCoTrack/data/Human_gut_microbiome.fastq) `pip install arg_ranker`
 * genome analysis
     * taxonomy annotation
         * 16S: blast to 16S database, such as [greengenes](https://greengenes.secondgenome.com/),
@@ -80,11 +85,59 @@ To align reads, usually metagenomes, to a known reference genome
         * fastANI: pairwise comparison
         * pangenome analysis: core, flexible, unique genes
             * [roary](https://sanger-pathogens.github.io/Roary/)
+        * multiple sequence analysis
+            * mafft, muscle
 * 16S analysis
-    * Qiime2 (install + execute in qiime2.sh.txt)
+    * Qiime2 (install + execute code in scripts/qiime2.sh.txt)
 
-## Data interpretation
-* 
+## [Data analysis interpretation](https://xkcd.com/2582/)
+1) Hypothesis -> null hypothesis -> to test against the [null hypothesis](https://xkcd.com/892/)
+2) Data -> find interesting trend/pattern -> hypothesis -> null hypothesis -> ... 
+* Null model
+    * Hypothesis: target genes in my data are under positive selection\
+    Should show a higher ratio of nonsynonymous mutations (N SNPs) than expected
+    * Null model: the (high) ratio of nonsynonymous mutations in my target genes can be explained by random mutation
+    * How to build the null model?
+        * 1,000-time simulation: easy to think, hard to do and requires computing power\
+        Computing the No. SNPs observed in my data (X)\
+        Computing the mutational frequency observed in my data: e.g. 20% A-T 30% G-C ...\
+        Randomly generating X SNPs in Y length of target genes (following the mutational frequency)\
+        Computing the No. N SNPs in the simulation\
+        Computing mean + 95% confidence interval of the No. N SNPs in all simulation\
+        Expected value get!
+        * Math: hard to think but easy to do, and super fun\
+        For each codon, computing the probability of N SNPs for a giving mutational type (e.g. A-T) -> P(N_A-T)\
+        For a gene, combining P(N_A-T) of all codons\
+        Computing expected No. N SNPs (A-T) giving No. A-T SNPs\
+        Computing expected No. N SNPs (A-T) giving No. SNPs of all mutational types\
+        Using binom test to compute the probability to obtain the observed data if the null hypothesis is true\
+        If p < 0.05 -> reject null model\
+        If p > 0.05 -> retain null model.
+* [Statistic tests](https://xkcd.com/882/)
+    * To compute the probability to obtain the observed data if the null hypothesis is true\
+    If [p < 0.05](https://xkcd.com/1478/) -> reject null model\
+    If p > 0.05 -> retain null model.\
+    Sometimes people use 0.01, for example, to narrow down the targets
+    * multiple hypothesis testing (false discovery rate)\
+    Does microbe 1 correlate with host age?\
+    Does microbe 2 correlate with host age?\
+    Does microbe 3 correlate with host age?\
+    Does microbe 4 correlate with host age?\
+    ...\
+    Does microbe 100 correlate with host age?\
+    If 100 tests are each conducted at the 5% significant level and all corresponding null hypotheses are true,\
+    the expected number of incorrect rejections (also known as false positives) is 5.\
+    -> FDR adjusting [in python](https://www.statsmodels.org/devel/stats.html#multiple-tests-and-multiple-comparison-procedures)
+    * Examples
+        * 
+    
+    
+    
+    
+* Visualization
+* [Model](https://xkcd.com/2169/)
+    * predictive model and cross validation
+    * descriptive model
 
 ## Contact
 anniz44@mit.edu or caozhichongchong@gmail.com
