@@ -13,7 +13,7 @@ Homework 1: install conda and [install blast by conda](https://anaconda.org/bioc
 * [pip](https://anaconda.org/anaconda/pip)\
 Many python packages can be easily installed pip!\
 Homework 2: install pip and use pip to install pandas (`pip install pandas`)
-* sequence similarity search: of course, to find sequences in your data that are similar to what have been annotated by other people\
+* sequence similarity search: of course, to find sequences in your data that are similar to what have been annotated by other people
     * Blast+: benchmark, slow but accurate
         * `makeblastdb -in your_database -dbtype nucl`: make db for DNA
         * `makeblastdb -in your_database -dbtype prot`: make db for protein
