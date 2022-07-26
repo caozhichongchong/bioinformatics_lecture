@@ -3,7 +3,7 @@ The application of tools of computation and analysis to the capture and interpre
 1) To know what tools to use and how to use the tools
 2) How to interpret data and test our hypotheses: statistic tests, null model, and visualization
 
-#### [Example can be downloaded here](https://drive.google.com/drive/folders/1kKDsmsKNie8CC5E5nbRnrGmh30A7a5hf?usp=sharing)
+#### [Examples can be downloaded here](https://drive.google.com/drive/folders/1kKDsmsKNie8CC5E5nbRnrGmh30A7a5hf?usp=sharing)
 
 ## Tools
 * [anaconda or miniconda](https://docs.conda.io/en/latest/miniconda.html): get python 3.9 version\
